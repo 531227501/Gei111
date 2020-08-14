@@ -107,15 +107,32 @@ public class WebPageParser {
 		return menuMap;
 	}
 
-	public static void parseMoviePage(String url) {
+	public static void parseMoviePage(String pageUrl) {
 
 		try {
 
-			Document doc = Jsoup.connect(url).get();
+			Document doc = Jsoup.connect(pageUrl).get();
 //			print(doc);
 //
-			Elements as = doc.select(".modVideo");
-			print(as);
+			Elements modElements = doc.select(".mod");
+//			print(modElements.size());
+			Elements aElements = modElements.get(0).select("a");
+
+//			ArrayList<MenuItem> itemList = new ArrayList<>();
+			for (Element element : aElements) {
+				String url = element.attr("href");
+				String name = element.text();
+
+				print(name);
+				print(url);
+				print("------------");
+//				if ("#".equals(url)) {
+//					itemList = new ArrayList<>();
+//					menuMap.put(name, itemList);
+//				} else {
+//					itemList.add(new MenuItem(name, url));
+//				}
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
