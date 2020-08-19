@@ -7,9 +7,11 @@ public class Main {
 		//		String result = NetworkGo.get(url);
 		//		System.out.println("result:" + result);
 
-//		WebPageParser.parseDynamicURL();
-//		WebPageParser.parseCategory("https://333bbm.com");
-		WebPageParser.parseMoviePage("https://333bbm.com/m01/index.html");
+//		String WebSiteUrl = WebPageParser.parseDynamicURL();
+
+		String WebSiteUrl = "https://333ccb.com";
+//		WebPageParser.parseCategory(WebSiteUrl);
+		WebPageParser.parseMoviePage(WebSiteUrl + "/m01/index.html");
 //		WebPageParser.parsePicPage("https://333bbm.com/p01/index.html");
 //		WebPageParser.parseVideoPage("https://333bbm.com/s01/index.html");
 //		WebPageParser.parseStoryPage("https://333bbm.com/t01/index.html");

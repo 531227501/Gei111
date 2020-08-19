@@ -55,6 +55,7 @@ public class WebPageParser {
 			long timestamp = System.currentTimeMillis();
 			int day1 = (int) ((timestamp + 8 * 3600000) / 86400000);
 			String url3 = "https://" + url2.get(day1 % url2.size());
+			System.out.println("final: " + url3);
 			return url3;
 
 		} catch (Exception e) {
@@ -120,11 +121,16 @@ public class WebPageParser {
 
 //			ArrayList<MenuItem> itemList = new ArrayList<>();
 			for (Element element : aElements) {
-				String url = element.attr("href");
-				String name = element.text();
 
-				print(name);
-				print(url);
+				if ("dt".equals(element.parent().nodeName())){
+					String url = element.attr("href");
+					String name = element.attr("title");
+
+					print("pic  : " + element.select(".nature").attr("data-original"));
+					print("title: " + name);
+					print("url  : " + url);
+				}
+
 				print("------------");
 //				if ("#".equals(url)) {
 //					itemList = new ArrayList<>();
