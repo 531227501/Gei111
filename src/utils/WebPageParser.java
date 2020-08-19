@@ -9,8 +9,10 @@ import org.jsoup.select.Elements;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import model.MenuItem;
+import model.PageInfoBean;
 
 import static utils.LogUtils.print;
 
@@ -89,17 +91,17 @@ public class WebPageParser {
 				}
 			}
 
-//			for (HashMap.Entry<String, ArrayList<MenuItem>> entry : menuMap.entrySet()) {
-//				String categoryName = entry.getKey();
-//				ArrayList<MenuItem> categoryContent = entry.getValue();
-//
-//				print(categoryName);
-//
-//				for (MenuItem item : categoryContent) {
-//					print("└---- " + item.getTitle() + " : " + item.getUrl());
-//
-//				}
-//			}
+			for (Map.Entry<String, ArrayList<MenuItem>> entry : menuMap.entrySet()) {
+				String categoryName = entry.getKey();
+				ArrayList<MenuItem> categoryContent = entry.getValue();
+
+				print(categoryName);
+
+				for (MenuItem item : categoryContent) {
+					print("└---- " + item.getTitle() + " : " + item.getUrl());
+
+				}
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -108,52 +110,61 @@ public class WebPageParser {
 		return menuMap;
 	}
 
-	public static void parseMoviePage(String pageUrl) {
+	public static PageInfoBean parseMoviePage(String host, String relativeSource) {
 
 		try {
+
+			String pageUrl = host + relativeSource;
+
+			ArrayList<PageInfoBean.PageItem> pageItems = new ArrayList<>();
 
 			Document doc = Jsoup.connect(pageUrl).get();
 //			print(doc);
 //
 			Elements modElements = doc.select(".mod");
-//			print(modElements.size());
 			Elements aElements = modElements.get(0).select("a");
 
-//			ArrayList<MenuItem> itemList = new ArrayList<>();
 			for (Element element : aElements) {
 
 				if ("dt".equals(element.parent().nodeName())){
 					String url = element.attr("href");
 					String name = element.attr("title");
+					String pic = element.select(".nature").attr("data-original");
 
-					print("pic  : " + element.select(".nature").attr("data-original"));
-					print("title: " + name);
-					print("url  : " + url);
+//					print("pic  : " + pic);
+//					print("title: " + name);
+//					print("url  : " + url);
+
+					pageItems.add(new PageInfoBean.PageItem(name, pic, url));
 				}
 
-				print("------------");
-//				if ("#".equals(url)) {
-//					itemList = new ArrayList<>();
-//					menuMap.put(name, itemList);
-//				} else {
-//					itemList.add(new MenuItem(name, url));
-//				}
+//				print("------------");
 			}
+
+			Elements elementsPages = doc.select(".pagination");
+			print(elementsPages);
+			elementsPages = elementsPages.select("a");
+
+			String nextPageUrl = "";
+			for(Element page : elementsPages){
+				if ("下一页".equals(page.text())){
+					String href = page.attr("href");
+					if (!"#".equals(href)){
+						nextPageUrl = host + href;
+					}
+				}
+			}
+			print(nextPageUrl);
+
+			PageInfoBean pageInfoBean = new PageInfoBean();
+			pageInfoBean.setItemList(pageItems);
+			pageInfoBean.setNextPageUrl(nextPageUrl);
+
+			return pageInfoBean;
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			return null;
 		}
-	}
-
-	public static void parsePicPage(String url) {
-
-	}
-
-	public static void parseVideoPage(String url) {
-
-	}
-
-	public static void parseStoryPage(String url) {
-
 	}
 }
